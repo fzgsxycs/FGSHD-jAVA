@@ -7,6 +7,8 @@ import com.example.System.dto.LoginRequest;
 import com.example.System.dto.LoginResponse;
 import com.example.System.entity.Permission;
 import com.example.System.entity.User;
+import com.example.System.exception.AuthException;
+import com.example.System.exception.BusinessException;
 import com.example.System.mapper.UserMapper;
 import com.example.System.service.PermissionService;
 import com.example.System.service.UserService;
@@ -32,12 +34,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 根据用户名查询用户
         User user = findByUsername(loginRequest.getUsername());
         if (user == null) {
-            throw new RuntimeException("用户不存在");
+            throw AuthException.userNotFound();
         }
         
         // 验证密码
         if (!BCrypt.checkpw(loginRequest.getPassword(), user.getPassword())) {
-            throw new RuntimeException("密码错误");
+            throw AuthException.passwordError();
         }
         
         // 获取用户权限列表
@@ -65,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public boolean register(User user) {
         // 检查用户名是否已存在
         if (findByUsername(user.getUsername()) != null) {
-            throw new RuntimeException("用户名已存在");
+            throw BusinessException.userAlreadyExists();
         }
         
         // 加密密码

@@ -4,6 +4,7 @@ import com.example.System.common.Result;
 import com.example.System.dto.LoginRequest;
 import com.example.System.dto.LoginResponse;
 import com.example.System.entity.User;
+import com.example.System.exception.BusinessException;
 import com.example.System.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,12 +34,8 @@ public class AuthController {
     public Result<LoginResponse> login(@io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "登录请求信息", required = true, content = @Content(schema = @Schema(implementation = LoginRequest.class))
     ) @RequestBody LoginRequest loginRequest) {
-        try {
-            LoginResponse response = userService.login(loginRequest);
-            return Result.success(response);
-        } catch (Exception e) {
-            return Result.error(e.getMessage());
-        }
+        LoginResponse response = userService.login(loginRequest);
+        return Result.success(response);
     }
 
     @Operation(summary = "用户注册", description = "创建新用户账户")
@@ -50,15 +47,11 @@ public class AuthController {
     public Result<String> register(@io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "用户注册信息", required = true, content = @Content(schema = @Schema(implementation = User.class))
     ) @RequestBody User user) {
-        try {
-            boolean success = userService.register(user);
-            if (success) {
-                return Result.success("注册成功");
-            } else {
-                return Result.error("注册失败");
-            }
-        } catch (Exception e) {
-            return Result.error(e.getMessage());
+        boolean success = userService.register(user);
+        if (success) {
+            return Result.success("注册成功");
+        } else {
+            throw BusinessException.dataSaveFailed();
         }
     }
 
@@ -69,17 +62,13 @@ public class AuthController {
     })
     @GetMapping("/info")
     public Result<User> getUserInfo(@Parameter(description = "用户ID", required = true) @RequestParam Long userId) {
-        try {
-            User user = userService.getById(userId);
-            if (user != null) {
-                // 不返回密码
-                user.setPassword(null);
-                return Result.success(user);
-            } else {
-                return Result.error("用户不存在");
-            }
-        } catch (Exception e) {
-            return Result.error(e.getMessage());
+        User user = userService.getById(userId);
+        if (user != null) {
+            // 不返回密码
+            user.setPassword(null);
+            return Result.success(user);
+        } else {
+            throw BusinessException.userNotFound();
         }
     }
 }
