@@ -13,10 +13,16 @@ spring:
     hibernate:
       ddl-auto: none
   
-  # MyBatis Plus PostgreSQL特定配置
-  mybatis-plus:
-    global-config:
-      db-config:
-        logic-delete-field: deleted
-        logic-delete-value: 1
-        logic-not-delete-value: 0
+# MyBatis Plus PostgreSQL特定配置
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      # PostgreSQL字段名配置
+      table-underline: true
+      capital-mode: false
+  configuration:
+    # 开启自动映射下划线到驼峰命名
+    map-underscore-to-camel-case: true

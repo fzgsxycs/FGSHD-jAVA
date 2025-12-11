@@ -8,6 +8,26 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- 创建用户表（如果不存在）
+CREATE TABLE IF NOT EXISTS "user" (
+    "id" BIGSERIAL PRIMARY KEY,
+    "username" VARCHAR(50) NOT NULL,
+    "password" VARCHAR(255) NOT NULL,
+    "email" VARCHAR(100) DEFAULT NULL,
+    "phone" VARCHAR(20) DEFAULT NULL,
+    "nickname" VARCHAR(50) DEFAULT NULL,
+    "avatar" VARCHAR(255) DEFAULT NULL,
+    "role" VARCHAR(20) DEFAULT 'USER',
+    "create_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "update_time" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "deleted" INTEGER DEFAULT 0,
+    CONSTRAINT uk_username UNIQUE ("username")
+);
+
+-- 为user表创建自动更新触发器
+DROP TRIGGER IF EXISTS update_user_modtime ON "user";
+CREATE TRIGGER update_user_modtime BEFORE UPDATE ON "user" FOR EACH ROW EXECUTE FUNCTION update_modified_column();
+
 -- 创建角色表（如果不存在）
 CREATE TABLE IF NOT EXISTS role (
     id BIGSERIAL PRIMARY KEY,
