@@ -4,6 +4,7 @@ import com.example.System.annotation.RequirePermission;
 import com.example.System.common.Result;
 import com.example.System.entity.Permission;
 import com.example.System.entity.Role;
+import com.example.System.exception.BusinessException;
 import com.example.System.service.PermissionService;
 import com.example.System.service.RoleService;
 import com.example.System.service.UserRoleService;
@@ -53,7 +54,7 @@ public class UserRoleController {
         if (success) {
             return Result.success("角色分配成功");
         } else {
-            return Result.error("角色分配失败");
+            throw BusinessException.dataSaveFailed();
         }
     }
 
@@ -66,7 +67,7 @@ public class UserRoleController {
         if (success) {
             return Result.success("角色取消成功");
         } else {
-            return Result.error("角色取消失败");
+            throw BusinessException.dataDeleteFailed();
         }
     }
 }

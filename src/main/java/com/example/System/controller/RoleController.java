@@ -3,6 +3,7 @@ package com.example.System.controller;
 import com.example.System.annotation.RequirePermission;
 import com.example.System.common.Result;
 import com.example.System.entity.Role;
+import com.example.System.exception.BusinessException;
 import com.example.System.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,30 +34,40 @@ public class RoleController {
         if (success) {
             return Result.success("角色创建成功");
         } else {
-            return Result.error("角色创建失败");
+            throw BusinessException.dataSaveFailed();
         }
     }
 
     @Operation(summary = "更新角色")
     @PutMapping("/update/{id}")
     public Result<String> updateRole(@PathVariable Long id, @RequestBody Role role) {
+        Role existingRole = roleService.getById(id);
+        if (existingRole == null) {
+            throw BusinessException.roleNotFound();
+        }
+        
         role.setId(id);
         boolean success = roleService.updateById(role);
         if (success) {
             return Result.success("角色更新成功");
         } else {
-            return Result.error("角色更新失败");
+            throw BusinessException.dataUpdateFailed();
         }
     }
 
     @Operation(summary = "删除角色")
     @DeleteMapping("/delete/{id}")
     public Result<String> deleteRole(@PathVariable Long id) {
+        Role existingRole = roleService.getById(id);
+        if (existingRole == null) {
+            throw BusinessException.roleNotFound();
+        }
+        
         boolean success = roleService.removeById(id);
         if (success) {
             return Result.success("角色删除成功");
         } else {
-            return Result.error("角色删除失败");
+            throw BusinessException.dataDeleteFailed();
         }
     }
 }

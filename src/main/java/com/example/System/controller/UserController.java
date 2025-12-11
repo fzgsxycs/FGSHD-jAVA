@@ -3,6 +3,7 @@ package com.example.System.controller;
 import com.example.System.annotation.RequirePermission;
 import com.example.System.common.Result;
 import com.example.System.entity.User;
+import com.example.System.exception.BusinessException;
 import com.example.System.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,7 +40,7 @@ public class UserController {
             user.setPassword(null);
             return Result.success(user);
         } else {
-            return Result.error("用户不存在");
+            throw BusinessException.userNotFound();
         }
     }
 
@@ -51,7 +52,7 @@ public class UserController {
         if (success) {
             return Result.success("用户创建成功");
         } else {
-            return Result.error("用户创建失败");
+            throw BusinessException.dataSaveFailed();
         }
     }
 
@@ -59,12 +60,17 @@ public class UserController {
     @PutMapping("/update/{id}")
     @RequirePermission(value = {"user:update"})
     public Result<String> updateUser(@Parameter(description = "用户ID") @PathVariable Long id, @RequestBody User user) {
+        User existingUser = userService.getById(id);
+        if (existingUser == null) {
+            throw BusinessException.userNotFound();
+        }
+        
         user.setId(id);
         boolean success = userService.updateById(user);
         if (success) {
             return Result.success("用户更新成功");
         } else {
-            return Result.error("用户更新失败");
+            throw BusinessException.dataUpdateFailed();
         }
     }
 
@@ -72,11 +78,16 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     @RequirePermission(value = {"user:delete"}, roles = {"admin"})
     public Result<String> deleteUser(@Parameter(description = "用户ID") @PathVariable Long id) {
+        User existingUser = userService.getById(id);
+        if (existingUser == null) {
+            throw BusinessException.userNotFound();
+        }
+        
         boolean success = userService.removeById(id);
         if (success) {
             return Result.success("用户删除成功");
         } else {
-            return Result.error("用户删除失败");
+            throw BusinessException.dataDeleteFailed();
         }
     }
 }

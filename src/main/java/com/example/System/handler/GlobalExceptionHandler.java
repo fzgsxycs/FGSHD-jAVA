@@ -8,6 +8,8 @@ import com.example.System.exception.BusinessException;
 import com.example.System.exception.SystemException;
 import com.example.System.service.ExceptionLogService;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -25,9 +27,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -38,9 +40,10 @@ import java.util.UUID;
  * 
  * @author System
  */
-@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     
     @Autowired
     private ExceptionLogService exceptionLogService;

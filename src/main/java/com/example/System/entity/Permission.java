@@ -50,9 +50,27 @@ public class Permission {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     @Schema(description = "更新时间", example = "2023-01-01T12:00:00")
     private LocalDateTime updateTime;
+    
+    // 手动添加getter和setter方法以确保编译成功
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @TableLogic
     @TableField("deleted")
     @Schema(description = "是否删除：0-未删除，1-已删除", example = "0")
     private Integer deleted;
+    
+    // 手动添加getter和setter方法以确保编译成功
+    public String getPermissionCode() {
+        return permissionCode;
+    }
+    
+    public void setPermissionCode(String permissionCode) {
+        this.permissionCode = permissionCode;
+    }
 }

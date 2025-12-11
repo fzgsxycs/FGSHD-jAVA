@@ -127,15 +127,17 @@ public class Result<T> {
     /**
      * 错误响应（来自异常）
      */
+    @SuppressWarnings("unchecked")
     public static <T> Result<T> error(BaseException exception) {
-        return new Result<>(exception.getErrorCodeValue(), exception.getMessage(), exception.getData());
+        return new Result<>(exception.getErrorCodeValue(), exception.getMessage(), (T) exception.getData());
     }
 
     /**
      * 错误响应（来自异常，带追踪ID）
      */
+    @SuppressWarnings("unchecked")
     public static <T> Result<T> error(BaseException exception, String traceId) {
-        return new Result<>(exception.getErrorCodeValue(), exception.getMessage(), exception.getData(), traceId);
+        return new Result<>(exception.getErrorCodeValue(), exception.getMessage(), (T) exception.getData(), traceId);
     }
 
     // ========== 常用业务错误响应 ==========
@@ -174,7 +176,7 @@ public class Result<T> {
      * 是否成功
      */
     public boolean isSuccess() {
-        return ErrorCode.SUCCESS.getCode().equals(this.code);
+        return Integer.valueOf(ErrorCode.SUCCESS.getCode()).equals(this.code);
     }
 
     /**
@@ -182,5 +184,12 @@ public class Result<T> {
      */
     public boolean isError() {
         return !isSuccess();
+    }
+    
+    /**
+     * 设置追踪ID
+     */
+    public void setTraceId(String traceId) {
+        this.traceId = traceId;
     }
 }

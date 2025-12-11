@@ -168,4 +168,28 @@ public class BusinessException extends BaseException {
     public static BusinessException noPermission() {
         return new BusinessException(ErrorCode.USER_NO_PERMISSION);
     }
+    
+    /**
+     * 数据保存失败
+     * @return BusinessException
+     */
+    public static BusinessException dataSaveFailed() {
+        return new BusinessException(ErrorCode.DATA_SAVE_FAILED);
+    }
+    
+    /**
+     * 数据更新失败
+     * @return BusinessException
+     */
+    public static BusinessException dataUpdateFailed() {
+        return new BusinessException(ErrorCode.DATA_UPDATE_FAILED);
+    }
+    
+    /**
+     * 数据删除失败
+     * @return BusinessException
+     */
+    public static BusinessException dataDeleteFailed() {
+        return new BusinessException(ErrorCode.DATA_DELETE_FAILED);
+    }
 }

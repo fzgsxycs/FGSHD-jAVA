@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>异常处理机制测试</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button.danger {
+            background-color: #f44336;
+        }
+        button.danger:hover {
+            background-color: #d32f2f;
+        }
+        button.warning {
+            background-color: #ff9800;
+        }
+        button.warning:hover {
+            background-color: #e68900;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+        .success {
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            border-color: #ebccd1;
+            color: #a94442;
+        }
+        .info {
+            background-color: #d9edf7;
+            border-color: #bce8f1;
+            color: #31708f;
+        }
+        .warning {
+            background-color: #fcf8e3;
+            border-color: #faebcc;
+            color: #8a6d3b;
+        }
+        .server-url {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>异常处理机制测试</h1>
+    
+    <div class="server-url">
+        <label for="serverUrl">服务器地址:</label>
+        <input type="text" id="serverUrl" value="http://localhost:8080" placeholder="输入服务器地址">
+    </div>
+    
+    <div class="container">
+        <div class="test-section">
+            <h2>自定义异常测试</h2>
+            <button class="danger" onclick="testException('/exception-test/business', false)">业务异常(无数据)</button>
+            <button class="danger" onclick="testException('/exception-test/business', true)">业务异常(带数据)</button>
+            <button class="warning" onclick="testException('/exception-test/auth')">认证异常</button>
+            <button class="danger" onclick="testException('/exception-test/system')">系统异常</button>
+            <div id="custom-result" class="result info">点击上方按钮测试自定义异常处理</div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Java内置异常测试</h2>
+            <button class="danger" onclick="testException('/exception-test/nullpointer')">空指针异常</button>
+            <button class="danger" onclick="testException('/exception-test/array')">数组越界异常</button>
+            <button class="warning" onclick="testNumberFormatException()">数字格式异常</button>
+            <button class="danger" onclick="testException('/exception-test/arithmetic')">算术异常</button>
+            <button class="danger" onclick="testException('/exception-test/classcast')">类型转换异常</button>
+            <button class="warning" onclick="testIllegalArgumentException('valid')">合法参数</button>
+            <button class="warning" onclick="testIllegalArgumentException('')">空参数</button>
+            <div id="java-result" class="result info">点击上方按钮测试Java内置异常处理</div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>异常日志查看</h2>
+        <button onclick="testException('/exception-log/all', false)">查看所有异常日志</button>
+        <button onclick="testException('/exception-log/unhandled', false)">查看未处理异常日志</button>
+        <div id="log-result" class="result info">点击上方按钮查看异常日志</div>
+    </div>
+
+    <script>
+        function getServerUrl() {
+            return document.getElementById('serverUrl').value;
+        }
+        
+        async function testException(url, useData) {
+            const serverUrl = getServerUrl();
+            const fullUrl = serverUrl + url;
+            let resultDivId = 'custom-result';
+            
+            if (url.includes('nullpointer') || url.includes('array') || url.includes('arithmetic') || url.includes('classcast')) {
+                resultDivId = 'java-result';
+            } else if (url.includes('exception-log')) {
+                resultDivId = 'log-result';
+            }
+            
+            const resultDiv = document.getElementById(resultDivId);
+            
+            try {
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                // 如果是业务异常测试，添加withData参数
+                if (url === '/exception-test/business') {
+                    const dataParam = useData ? '?withData=true' : '?withData=false';
+                    const response = await fetch(fullUrl + dataParam, options);
+                    handleResponse(response, resultDiv);
+                    return;
+                }
+                
+                const response = await fetch(fullUrl, options);
+                handleResponse(response, resultDiv);
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `请求失败: ${error.message}`;
+            }
+        }
+        
+        async function testNumberFormatException() {
+            const serverUrl = getServerUrl();
+            const number = prompt('请输入一个数字（非数字将触发异常）:', 'abc');
+            if (number === null) return;
+            
+            const fullUrl = `${serverUrl}/exception-test/numberformat?number=${encodeURIComponent(number)}`;
+            const resultDiv = document.getElementById('java-result');
+            
+            try {
+                const response = await fetch(fullUrl);
+                handleResponse(response, resultDiv);
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `请求失败: ${error.message}`;
+            }
+        }
+        
+        async function testIllegalArgumentException(value) {
+            const serverUrl = getServerUrl();
+            const fullUrl = `${serverUrl}/exception-test/illegal-argument?value=${encodeURIComponent(value)}`;
+            const resultDiv = document.getElementById('java-result');
+            
+            try {
+                const response = await fetch(fullUrl);
+                handleResponse(response, resultDiv);
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `请求失败: ${error.message}`;
+            }
+        }
+        
+        async function handleResponse(response, resultDiv) {
+            try {
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `成功响应 (${response.status}):\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `错误响应 (${response.status}):\n${JSON.stringify(data, null, 2)}`;
+                    
+                    // 如果有traceId，显示它
+                    if (data.traceId) {
+                        resultDiv.textContent += `\n\n追踪ID: ${data.traceId}`;
+                    }
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `解析响应失败: ${error.message}\n\n原始响应:\n${await response.text()}`;
+            }
+        }
+    </script>
+</body>
+</html>

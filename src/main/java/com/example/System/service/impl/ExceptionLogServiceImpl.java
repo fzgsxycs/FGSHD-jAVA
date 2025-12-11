@@ -7,10 +7,11 @@ import com.example.System.mapper.ExceptionLogMapper;
 import com.example.System.service.ExceptionLogService;
 import com.example.System.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -23,6 +24,9 @@ import java.io.StringWriter;
 @Service
 public class ExceptionLogServiceImpl extends ServiceImpl<ExceptionLogMapper, ExceptionLog> 
         implements ExceptionLogService {
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Override
     public void recordException(Exception exception, HttpServletRequest request, String traceId) {
@@ -119,17 +123,22 @@ public class ExceptionLogServiceImpl extends ServiceImpl<ExceptionLogMapper, Exc
             String token = request.getHeader("Authorization");
             if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
                 token = token.substring(7);
-                if (JwtUtil.validateToken(token)) {
-                    String username = JwtUtil.getUsernameFromToken(token);
-                    exceptionLog.setUsername(username);
-                    // 这里可以根据需要查询用户ID
-                    // Long userId = userService.getUserIdByUsername(username);
-                    // exceptionLog.setUserId(userId);
+                try {
+                    String username = jwtUtil.getUsernameFromToken(token);
+                    if (username != null && !username.isEmpty()) {
+                        exceptionLog.setUsername(username);
+                        // 这里可以根据需要查询用户ID
+                        // Long userId = userService.getUserIdByUsername(username);
+                        // exceptionLog.setUserId(userId);
+                    }
+                } catch (Exception e) {
+                    // Token解析失败，忽略
+                    log.debug("JWT令牌解析失败: " + e.getMessage());
                 }
             }
         } catch (Exception e) {
             // 忽略解析JWT异常
-            log.debug("解析JWT令牌失败: ", e);
+            log.debug("解析JWT令牌失败: " + e.getMessage());
         }
     }
 

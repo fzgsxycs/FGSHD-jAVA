@@ -74,4 +74,20 @@ public abstract class BaseException extends RuntimeException {
     public String getMessage() {
         return super.getMessage();
     }
+    
+    /**
+     * 获取错误码
+     * @return 错误码
+     */
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
+    
+    /**
+     * 获取数据
+     * @return 数据
+     */
+    public Object getData() {
+        return data;
+    }
 }

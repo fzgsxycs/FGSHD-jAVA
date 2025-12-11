@@ -118,4 +118,20 @@ public class AuthException extends BaseException {
     public static AuthException noPermission(String message) {
         return new AuthException(ErrorCode.USER_NO_PERMISSION, message);
     }
+    
+    /**
+     * 用户不存在
+     * @return AuthException
+     */
+    public static AuthException userNotFound() {
+        return new AuthException(ErrorCode.USER_NOT_FOUND);
+    }
+    
+    /**
+     * 密码错误
+     * @return AuthException
+     */
+    public static AuthException passwordError() {
+        return new AuthException(ErrorCode.USER_PASSWORD_ERROR);
+    }
 }

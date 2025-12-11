@@ -39,4 +39,13 @@ public class RolePermission {
     @TableField("deleted")
     @Schema(description = "是否删除：0-未删除，1-已删除", example = "0")
     private Integer deleted;
+    
+    // 手动添加getter和setter方法以确保编译成功
+    public Long getPermissionId() {
+        return permissionId;
+    }
+    
+    public void setPermissionId(Long permissionId) {
+        this.permissionId = permissionId;
+    }
 }

@@ -50,4 +50,61 @@ public class LoginResponse {
         response.setPermissions(permissions);
         return response;
     }
+    
+    // 手动添加getter和setter方法以确保编译成功
+    public String getToken() {
+        return token;
+    }
+    
+    public void setToken(String token) {
+        this.token = token;
+    }
+    
+    public Long getUserId() {
+        return userId;
+    }
+    
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+    
+    public String getUsername() {
+        return username;
+    }
+    
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
+    public String getNickname() {
+        return nickname;
+    }
+    
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+    
+    public String getRole() {
+        return role;
+    }
+    
+    public void setRole(String role) {
+        this.role = role;
+    }
+    
+    public String getAvatar() {
+        return avatar;
+    }
+    
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+    
+    public String getPermissions() {
+        return permissions;
+    }
+    
+    public void setPermissions(String permissions) {
+        this.permissions = permissions;
+    }
 }

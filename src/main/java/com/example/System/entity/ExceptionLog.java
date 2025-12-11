@@ -123,4 +123,149 @@ public class ExceptionLog {
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+    
+    // 手动添加getter和setter方法以确保编译成功
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public String getTraceId() {
+        return traceId;
+    }
+    
+    public void setTraceId(String traceId) {
+        this.traceId = traceId;
+    }
+    
+    public String getExceptionType() {
+        return exceptionType;
+    }
+    
+    public void setExceptionType(String exceptionType) {
+        this.exceptionType = exceptionType;
+    }
+    
+    public Integer getErrorCode() {
+        return errorCode;
+    }
+    
+    public void setErrorCode(Integer errorCode) {
+        this.errorCode = errorCode;
+    }
+    
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+    
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+    
+    public String getRequestUri() {
+        return requestUri;
+    }
+    
+    public void setRequestUri(String requestUri) {
+        this.requestUri = requestUri;
+    }
+    
+    public String getRequestMethod() {
+        return requestMethod;
+    }
+    
+    public void setRequestMethod(String requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+    
+    public String getRequestParams() {
+        return requestParams;
+    }
+    
+    public void setRequestParams(String requestParams) {
+        this.requestParams = requestParams;
+    }
+    
+    public Long getUserId() {
+        return userId;
+    }
+    
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+    
+    public String getUsername() {
+        return username;
+    }
+    
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
+    public String getIpAddress() {
+        return ipAddress;
+    }
+    
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+    
+    public String getUserAgent() {
+        return userAgent;
+    }
+    
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+    
+    public String getStackTrace() {
+        return stackTrace;
+    }
+    
+    public void setStackTrace(String stackTrace) {
+        this.stackTrace = stackTrace;
+    }
+    
+    public Boolean getHandled() {
+        return handled;
+    }
+    
+    public void setHandled(Boolean handled) {
+        this.handled = handled;
+    }
+    
+    public String getHandler() {
+        return handler;
+    }
+    
+    public void setHandler(String handler) {
+        this.handler = handler;
+    }
+    
+    public String getHandleNote() {
+        return handleNote;
+    }
+    
+    public void setHandleNote(String handleNote) {
+        this.handleNote = handleNote;
+    }
+    
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+    
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+    
+    public LocalDateTime getUpdateTime() {
+        return updateTime;
+    }
+    
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.updateTime = updateTime;
+    }
 }

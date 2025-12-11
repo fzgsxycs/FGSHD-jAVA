@@ -3,7 +3,7 @@ package com.example.System.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.System.entity.ExceptionLog;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 异常日志服务接口

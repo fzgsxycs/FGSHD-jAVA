@@ -39,4 +39,21 @@ public class UserRole {
     @TableField("deleted")
     @Schema(description = "是否删除：0-未删除，1-已删除", example = "0")
     private Integer deleted;
+    
+    // 手动添加getter和setter方法以确保编译成功
+    public Long getUserId() {
+        return userId;
+    }
+    
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+    
+    public Long getRoleId() {
+        return roleId;
+    }
+    
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
 }
