@@ -2,9 +2,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/systemdome?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:postgresql://localhost:5432/fgscs?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
     username: postgres
-    password: postgres
+    password: 123456
   
   # JPA/Hibernate PostgreSQL方言配置
   jpa:

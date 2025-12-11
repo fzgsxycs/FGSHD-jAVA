@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Component
 @ConditionalOnProperty(name = "app.database.use-legacy-init", havingValue = "true", matchIfMissing = false)
+@org.springframework.context.annotation.Profile("mysql")
 public class AutoTableInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(AutoTableInitializer.class);
@@ -103,7 +104,14 @@ public class AutoTableInitializer {
     }
 
     private void executeInitializationScript() throws Exception {
-        ClassPathResource resource = new ClassPathResource("sql/check_and_init_tables.sql");
+        String scriptPath;
+        if (databaseTypeChecker.isPostgresql()) {
+            scriptPath = "sql/check_and_init_tables_postgresql.sql";
+        } else {
+            scriptPath = "sql/check_and_init_tables.sql";
+        }
+        
+        ClassPathResource resource = new ClassPathResource(scriptPath);
         BufferedReader reader = new BufferedReader(
             new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8));
         
@@ -352,9 +360,13 @@ public class AutoTableInitializer {
                     "ON CONFLICT (role_id, permission_id) DO NOTHING");
 
             // 如果已存在admin用户，则为其分配admin角色
-            jdbcTemplate.update("INSERT INTO user_role (user_id, role_id) " +
-                    "SELECT id, 1 FROM \"user\" WHERE username = 'admin'" +
-                    "ON CONFLICT (user_id, role_id) DO NOTHING");
+            try {
+                jdbcTemplate.update("INSERT INTO user_role (user_id, role_id) " +
+                        "SELECT id, 1 FROM \"user\" WHERE username = 'admin'" +
+                        "ON CONFLICT (user_id, role_id) DO NOTHING");
+            } catch (Exception e) {
+                logger.debug("尝试为admin用户分配角色时出错（可能是user表不存在或admin用户不存在）: " + e.getMessage());
+            }
         }
     }
 }

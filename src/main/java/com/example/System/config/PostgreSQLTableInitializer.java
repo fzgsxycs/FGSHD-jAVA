@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @org.springframework.context.annotation.Profile("postgresql")
-@ConditionalOnProperty(name = "app.database.auto-init", havingValue = "true", matchIfMissing = true)
 public class PostgreSQLTableInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(PostgreSQLTableInitializer.class);
@@ -197,9 +196,13 @@ public class PostgreSQLTableInitializer {
                     "ON CONFLICT (role_id, permission_id) DO NOTHING");
 
             // 如果已存在admin用户，则为其分配admin角色
-            jdbcTemplate.update("INSERT INTO user_role (user_id, role_id) " +
-                    "SELECT id, 1 FROM \"user\" WHERE username = 'admin'" +
-                    "ON CONFLICT (user_id, role_id) DO NOTHING");
+            try {
+                jdbcTemplate.update("INSERT INTO user_role (user_id, role_id) " +
+                        "SELECT id, 1 FROM \"user\" WHERE username = 'admin'" +
+                        "ON CONFLICT (user_id, role_id) DO NOTHING");
+            } catch (Exception e) {
+                logger.debug("尝试为admin用户分配角色时出错（可能是user表不存在或admin用户不存在）: " + e.getMessage());
+            }
             
             logger.info("默认数据初始化完成");
         } catch (Exception e) {
