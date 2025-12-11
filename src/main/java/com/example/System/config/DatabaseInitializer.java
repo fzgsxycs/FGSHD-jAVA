@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Component
 @ConditionalOnProperty(name = "app.database.use-simple-init", havingValue = "true")
+@org.springframework.context.annotation.Profile("mysql")
 public class DatabaseInitializer implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseInitializer.class);

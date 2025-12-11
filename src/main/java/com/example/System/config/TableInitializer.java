@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(name = "app.database.use-table-init", havingValue = "true")
+@org.springframework.context.annotation.Profile("mysql")
 public class TableInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(TableInitializer.class);

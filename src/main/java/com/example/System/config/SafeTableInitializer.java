@@ -14,6 +14,7 @@ import java.util.List;
 
 @Component
 @ConditionalOnProperty(name = "app.database.auto-init", havingValue = "true", matchIfMissing = true)
+@org.springframework.context.annotation.Profile("mysql")
 public class SafeTableInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(SafeTableInitializer.class);
